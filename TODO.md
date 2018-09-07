@@ -1,1 +1,1 @@
-- [ ] Consider instead a Treiber stack?
+- [x] Consider instead a Treiber stack?
