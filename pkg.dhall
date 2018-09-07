@@ -1,4 +1,4 @@
 let prelude = https://hackage.haskell.org/package/ats-pkg/src/dhall/atspkg-prelude.dhall
 
 in λ(x : List Natural) →
-  prelude.makePkg { x = x, name = "ms-queue", githubUsername = "vmchale" }
+  prelude.makePkg { x = x, name = "stack", githubUsername = "vmchale" }
