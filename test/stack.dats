@@ -1,6 +1,6 @@
-staload "SATS/ms-queue.sats"
+staload "SATS/stack.sats"
 
-#include "DATS/ms-queue.dats"
+#include "DATS/stack.dats"
 
 implement main0 () =
   println!("Hello, World!")

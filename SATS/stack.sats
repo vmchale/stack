@@ -1,4 +1,4 @@
-%{#
+%{
 #include <stdatomic.h>
 %}
 
@@ -25,7 +25,6 @@ fn {a:vt@ype} atomic_load { l : addr | l > null }(a @ l | aptr(l)) : a =
   "mac#"
 
 // see: https://github.com/ivmai/libatomic_ops/blob/master/src/atomic_ops_stack.h
-// uses libatomic
 fn {a:vt@ype} atomic_malloc { sz : int | sz == sizeof(a) }(sz : size_t(sz)) :
   [l:addr] (a? @ l | aptr(l)) =
   "mac#malloc"
