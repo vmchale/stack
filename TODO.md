@@ -1,0 +1,1 @@
+- [ ] Consider instead a Treiber stack?
