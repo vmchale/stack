@@ -18,6 +18,7 @@ fun {a:vt@ype} push (&stack_t(a) >> stack_t(a), a) : void
 
 fun {a:vt@ype} pop (&stack_t(a) >> _) : Option_vt(a)
 
+// FIXME: linearity etc.?
 fn atomic_store {a:vt@ype}{ l : addr | l > null }(a? @ l | aptr(l), a) : (a @ l | void) =
   "mac#"
 
