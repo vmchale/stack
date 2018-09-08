@@ -16,12 +16,12 @@ fun new {a:vt@ype} (&stack_t(a)? >> stack_t(a)) : void
 
 fun {a:vt@ype} push (&stack_t(a) >> stack_t(a), a) : void
 
-fun {a:vt@ype} pop (&stack_t(a) >> _, &a? >> Option_vt(a)) : void
+fun {a:vt@ype} pop (&stack_t(a) >> _) : Option_vt(a)
 
 fn atomic_store {a:vt@ype}{ l : addr | l > null }(a? @ l | aptr(l), a) : (a @ l | void) =
   "mac#"
 
-fn {a:vt@ype} atomic_load { l : addr | l > null }(a @ l | aptr(l)) : a =
+fn atomic_load {a:vt@ype}{ l : addr | l > null }(a @ l | aptr(l)) : a =
   "mac#"
 
 // strictly speaking it is wrong to assert it isn't null but idc
