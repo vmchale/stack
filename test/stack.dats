@@ -35,7 +35,7 @@ implement main0 () =
     val pre_st = newm()
     val v = @{ x = 1, y = 2 }
     
-    fun loop_thread(i : int) : void =
+    fun loop_thread {i:nat} .<i>. (i : int(i)) : void =
       {
         var newthread: pthread
         var attr: pthread_attr
