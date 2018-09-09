@@ -6,7 +6,7 @@ staload "libats/ML/SATS/string.sats"
 #include "DATS/stack.dats"
 
 %{#
-#include <threads.h>
+#include <pthread.h>
 %}
 
 typedef pair = @{ x = int, y = int }
@@ -15,22 +15,42 @@ fn print_pair(v : pair) : void =
   println!("@{ x = " + tostring_int(v.x) + ", y = " + tostring_int(v.y) + " }")
 
 // int thrd_create( thrd_t *thr, thrd_start_t func, void *arg );
-typedef thrd_t = $extype "thrd_t"
+typedef pthread = $extype "pthread_t"
+typedef pthread_attr = $extype "pthread_attr_t"
 
 extern
-fn thrd_create {env:vt@ype} (&thrd_t? >> thrd_t, env -> void, env) : int
+fn pthread_create {env:vt@ype}(&pthread? >> pthread, &pthread_attr, env -> void, env) : int =
+  "mac#"
 
 extern
-fn thrd_join(thrd_t, &int? >> int) : int
+fn pthread_attr_init(&pthread_attr? >> pthread_attr) : int =
+  "mac#"
+
+extern
+fn pthread_join(pthread, &int? >> int) : int =
+  "mac#"
 
 implement main0 () =
   {
     val pre_st = newm()
     val v = @{ x = 1, y = 2 }
-    var newthread: thrd_t
-    val _ = thrd_create{string}(newthread, lam x => println!(x), "Hello, World!")
-    var res: int
-    val _ = thrd_join(newthread, res)
+    
+    fun loop_thread(i : int) : void =
+      {
+        var newthread: pthread
+        var attr: pthread_attr
+        val _ = pthread_attr_init(attr)
+        val j = i
+        val _ = pthread_create{int}(newthread, attr, lam x => println!(x), j)
+        var res: int
+        val () = if i = 0 then
+          ()
+        else
+          loop_thread(i - 1)
+        val _ = pthread_join(newthread, res)
+      }
+    
+    val () = loop_thread(10)
     val st = pushm<pair>(pre_st, v)
     val- (_, ~Some_vt (z)) = popm(st)
     val () = print_pair(z)
