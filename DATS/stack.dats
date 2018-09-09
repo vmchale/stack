@@ -22,6 +22,16 @@ implement copy_pointer (ptr) =
       (pointer_t(nd0), pointer_t(nd1))
     end
 
+implement copy_stack (st) =
+  let
+    val ptr = st.stack_head
+    val (ptr0, ptr1) = copy_pointer(ptr)
+    val st0 = @{ stack_head = ptr0 }
+    val st1 = @{ stack_head = ptr1 }
+  in
+    (st0, st1)
+  end
+
 implement newm () =
   @{ stack_head = none_t }
 

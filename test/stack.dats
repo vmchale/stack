@@ -9,7 +9,7 @@ staload "libats/ML/SATS/string.sats"
 #include <pthread.h>
 %}
 
-typedef pair = @{ x = int, y = int }
+vtypedef pair = @{ x = int, y = int }
 
 fn print_pair(v : pair) : void =
   println!("@{ x = " + tostring_int(v.x) + ", y = " + tostring_int(v.y) + " }")
@@ -19,7 +19,7 @@ typedef pthread = $extype "pthread_t"
 typedef pthread_attr = $extype "pthread_attr_t"
 
 extern
-fn pthread_create {env:vt@ype}(&pthread? >> pthread, &pthread_attr, env -> void, env) : int =
+fn pthread_create {b:vt@ype}(&pthread? >> pthread, &pthread_attr, b -> void, b) : int =
   "mac#"
 
 extern
@@ -42,22 +42,20 @@ implement main0 () =
         val () = print_pair(z)
       in end
     
-    val () = push_pop(0, pre_st)
-    
-    fun loop_thread {i:nat} .<i>. (i : int(i)) : void =
+    fun loop_thread {i:nat} .<i>. (i : int(i), pre_st : stack_t(pair)) : void =
       {
         var newthread: pthread
         var attr: pthread_attr
         val _ = pthread_attr_init(attr)
-        val j = i
-        val _ = pthread_create{int}(newthread, attr, lam x => println!(x), j)
+        val (pre_st0, pre_st1) = copy_stack(pre_st)
+        val _ = pthread_create(newthread, attr, lam x => push_pop(0, x), pre_st0)
         var res: int
         val () = if i = 0 then
-          ()
+          { val- (_, ~None_vt()) = popm(pre_st1) }
         else
-          loop_thread(i - 1)
+          loop_thread(i - 1, pre_st1)
         val _ = pthread_join(newthread, res)
       }
     
-    val () = loop_thread(10)
+    val () = loop_thread(10, pre_st)
   }
