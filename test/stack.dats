@@ -19,7 +19,8 @@ typedef pthread = $extype "pthread_t"
 typedef pthread_attr = $extype "pthread_attr_t"
 
 extern
-fn pthread_create {env:vt@ype}(&pthread? >> pthread, &pthread_attr, env -> void, env) : int =
+fn pthread_create {env:vt@ype}(&pthread? >> pthread, &pthread_attr, env -<lin,1> void, env) :
+  int =
   "mac#"
 
 extern
@@ -48,7 +49,7 @@ implement main0 () =
         var attr: pthread_attr
         val _ = pthread_attr_init(attr)
         val (pre_st0, pre_st1) = copy_stack(pre_st)
-        val _ = pthread_create(newthread, attr, lam x => push_pop(0, x), pre_st0)
+        val _ = pthread_create(newthread, attr, llam x => push_pop(0, x), pre_st0)
         var res: int
         val () = if i = 0 then
           { val- (_, ~None_vt()) = popm(pre_st1) }
