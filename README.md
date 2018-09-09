@@ -1,7 +1,7 @@
 # stack
 
-Implementation of a lock-free stack in ATS. Currently half the implementation is
-missing.
+Implementation of a lock-free stack in ATS. Currently I don't really know if
+this works so use it your own peril!
 
 ## Contents
 
