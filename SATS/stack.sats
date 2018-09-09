@@ -3,7 +3,7 @@
 %}
 
 // atomic_uintptr_t
-typedef aptr(l: addr) = $extype "_Atomic postiats_tyrec_1*"
+typedef aptr(l: addr) = $extype "_Atomic char**"
 
 datavtype pointer_t(a: vt@ype) =
   | pointer_t of node_t(a)

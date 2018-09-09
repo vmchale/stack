@@ -38,15 +38,15 @@ implement main0 () =
   {
     val pre_st = newm()
     
-    fn push_pop(i : int, pre_st : stack_t(pair)) : void =
+    fn push_pop(i : int, pre_st : stack_t(string)) : void =
       let
-        val v = @{ x = i, y = i }
-        val st = pushm<pair>(pre_st, v)
+        val v = "string"
+        val st = pushm<string>(pre_st, v)
         val- (_, ~Some_vt (z)) = popm(st)
-        val () = print_pair(z)
+        val () = println!(z)
       in end
     
-    fun loop_thread {i:nat} .<i>. (i : int(i), pre_st : stack_t(pair)) : void =
+    fun loop_thread {i:nat} .<i>. (i : int(i), pre_st : stack_t(string)) : void =
       {
         var newthread: pthread_t
         var attr: pthread_attr_t
