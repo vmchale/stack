@@ -2,7 +2,7 @@
 #include <stdatomic.h>
 %}
 
-// atomic_uintptr_t
+// this is... less than ideal
 typedef aptr(l: addr) = $extype "_Atomic char**"
 
 datavtype pointer_t(a: vt@ype) =

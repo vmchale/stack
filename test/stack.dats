@@ -38,9 +38,10 @@ implement main0 () =
   {
     val pre_st = newm()
     
-    fn push_pop(i : int, pre_st : stack_t(string)) : void =
+    // TODO: make this a directory traversal
+    fn push_pop(s : string, pre_st : stack_t(string)) : void =
       let
-        val v = "string"
+        val v = s
         val st = pushm<string>(pre_st, v)
         val- (_, ~Some_vt (z)) = popm(st)
         val () = println!(z)
@@ -52,7 +53,7 @@ implement main0 () =
         var attr: pthread_attr_t
         val _ = pthread_attr_init(attr)
         val (pre_st0, pre_st1) = copy_stack(pre_st)
-        val _ = pthread_create(newthread, attr, llam x => push_pop(0, x), pre_st0)
+        val _ = pthread_create(newthread, attr, llam x => push_pop("string", x), pre_st0)
         var res: int
         val () = if i = 0 then
           { val- (_, ~None_vt()) = popm(pre_st1) }
