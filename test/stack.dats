@@ -15,7 +15,7 @@ implement main0 () =
   {
     val pre_st = newm()
     val v = @{ x = 1, y = 2 }
-    val () = print_pair(v)
     val st = pushm<pair>(pre_st, v)
     val- (_, ~Some_vt (z)) = popm(st)
+    val () = print_pair(z)
   }
