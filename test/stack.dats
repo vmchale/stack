@@ -19,7 +19,7 @@ typedef pthread = $extype "pthread_t"
 typedef pthread_attr = $extype "pthread_attr_t"
 
 extern
-fn pthread_create {b:vt@ype}(&pthread? >> pthread, &pthread_attr, b -> void, b) : int =
+fn pthread_create {env:vt@ype}(&pthread? >> pthread, &pthread_attr, env -> void, env) : int =
   "mac#"
 
 extern
