@@ -15,20 +15,23 @@ fn print_pair(v : pair) : void =
   println!("@{ x = " + tostring_int(v.x) + ", y = " + tostring_int(v.y) + " }")
 
 // int thrd_create( thrd_t *thr, thrd_start_t func, void *arg );
-typedef pthread = $extype "pthread_t"
-typedef pthread_attr = $extype "pthread_attr_t"
+typedef pthread_t = $extype "pthread_t"
+typedef pthread_attr_t = $extype "pthread_attr_t"
 
 extern
-fn pthread_create {env:vt@ype}(&pthread? >> pthread, &pthread_attr, env -<lin,1> void, env) :
-  int =
+fn pthread_create {env:vt@ype}( &pthread_t? >> pthread_t
+                              , &pthread_attr_t
+                              , env -<lin,1> void
+                              , env
+                              ) : int =
   "mac#"
 
 extern
-fn pthread_attr_init(&pthread_attr? >> pthread_attr) : int =
+fn pthread_attr_init(&pthread_attr_t? >> pthread_attr_t) : int =
   "mac#"
 
 extern
-fn pthread_join(pthread, &int? >> int) : int =
+fn pthread_join(pthread_t, &int? >> int) : int =
   "mac#"
 
 implement main0 () =
@@ -45,8 +48,8 @@ implement main0 () =
     
     fun loop_thread {i:nat} .<i>. (i : int(i), pre_st : stack_t(pair)) : void =
       {
-        var newthread: pthread
-        var attr: pthread_attr
+        var newthread: pthread_t
+        var attr: pthread_attr_t
         val _ = pthread_attr_init(attr)
         val (pre_st0, pre_st1) = copy_stack(pre_st)
         val _ = pthread_create(newthread, attr, llam x => push_pop(0, x), pre_st0)
