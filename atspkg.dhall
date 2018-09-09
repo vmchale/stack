@@ -7,4 +7,5 @@ in prelude.default ⫽
       , target = "${prelude.atsProject}/stack"
       }
     ]
+  , ccompiler = "clang"
   }

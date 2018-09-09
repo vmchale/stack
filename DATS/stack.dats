@@ -1,6 +1,6 @@
 staload "SATS/stack.sats"
 
-implement init () =
+implement newm () =
   @{ stack_head = none_t }
 
 implement new (st) =
@@ -13,6 +13,15 @@ implement {a} push (st, x) =
     val next_node = node_t(@{ value = (pf | ptr), next = st.stack_head })
     val () = st.stack_head := pointer_t(next_node)
   in end
+
+implement {a} pushm (st, x) =
+  let
+    val (pf_pre | ptr) = atomic_malloc(sizeof<a>)
+    val (pf | ()) = atomic_store(pf_pre | ptr, x)
+    val next_node = node_t(@{ value = (pf | ptr), next = st.stack_head })
+  in
+    @{ stack_head = pointer_t(next_node) }
+  end
 
 implement {a} pop (st) =
   case+ st.stack_head of
@@ -27,3 +36,21 @@ implement {a} pop (st) =
         end
       end
     | none_t() => None_vt()
+
+implement {a} popm (st) =
+  case+ st.stack_head of
+    | ~pointer_t (~node_t (nd)) => 
+      begin
+        let
+          val (pf | aptr) = nd.value
+          val x = atomic_load(pf | aptr)
+          val new_st = @{ stack_head = nd.next }
+        in
+          (new_st, Some_vt(x))
+        end
+      end
+    | ~none_t() => let
+      val new_st = @{ stack_head = none_t }
+    in
+      (new_st, None_vt())
+    end
