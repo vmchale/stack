@@ -1,5 +1,27 @@
 staload "SATS/stack.sats"
 
+implement copy_node (node) =
+  let
+    val ~node_t (nd) = node
+    val node_next = nd.next
+    val (node_next0, node_next1) = copy_pointer(node_next)
+    val (node_pf | node_ptr) = nd.value
+    prval (node_pf0, node_pf1) = copy_view(node_pf)
+    val node0 = node_t(@{ value = (node_pf0 | node_ptr), next = node_next0 })
+    val node1 = node_t(@{ value = (node_pf1 | node_ptr), next = node_next1 })
+  in
+    (node0, node1)
+  end
+
+implement copy_pointer (ptr) =
+  case+ ptr of
+    | ~none_t() => (none_t, none_t)
+    | ~pointer_t (nd) => let
+      val (nd0, nd1) = copy_node(nd)
+    in
+      (pointer_t(nd0), pointer_t(nd1))
+    end
+
 implement newm () =
   @{ stack_head = none_t }
 
