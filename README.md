@@ -1,7 +1,7 @@
 # stack
 
 Implementation of a lock-free stack in ATS. Currently I don't really know if
-this works so use it your own peril!
+this works.
 
 ## Contents
 
