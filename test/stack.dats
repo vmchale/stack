@@ -33,7 +33,16 @@ fn pthread_join(pthread, &int? >> int) : int =
 implement main0 () =
   {
     val pre_st = newm()
-    val v = @{ x = 1, y = 2 }
+    
+    fn push_pop(i : int, pre_st : stack_t(pair)) : void =
+      let
+        val v = @{ x = i, y = i }
+        val st = pushm<pair>(pre_st, v)
+        val- (_, ~Some_vt (z)) = popm(st)
+        val () = print_pair(z)
+      in end
+    
+    val () = push_pop(0, pre_st)
     
     fun loop_thread {i:nat} .<i>. (i : int(i)) : void =
       {
@@ -51,7 +60,4 @@ implement main0 () =
       }
     
     val () = loop_thread(10)
-    val st = pushm<pair>(pre_st, v)
-    val- (_, ~Some_vt (z)) = popm(st)
-    val () = print_pair(z)
   }

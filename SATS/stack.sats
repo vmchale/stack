@@ -15,6 +15,14 @@ and node_t(a: vt@ype) =
 
 vtypedef stack_t(a: vt@ype) = @{ stack_head = pointer_t(a) }
 
+fun copy_view {a:vt@ype}{l:addr} (a @ l, aptr(l)) : (a @ l, a @ l, aptr(l), aptr(l))
+
+fun copy_node {a:vt@ype} (node_t(a)) : (node_t(a), node_t(a))
+
+fun copy_pointer {a:vt@ype} (pointer_t(a)) : (pointer_t(a), pointer_t(a))
+
+fun copy_stack {a:vt@ype} (stack_t(a)) : (stack_t(a), stack_t(a))
+
 fun new {a:vt@ype} (&stack_t(a)? >> stack_t(a)) : void
 
 fun {a:vt@ype} push (&stack_t(a) >> stack_t(a), a) : void
