@@ -8,5 +8,4 @@ in prelude.default ⫽
       , libs = [ "pthread" ]
       }
     ]
-  , ccompiler = "gcc"
   }
