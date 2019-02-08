@@ -3,7 +3,7 @@
 %}
 
 // this is... less than ideal
-typedef aptr(l: addr) = $extype "_Atomic char**"
+typedef aptr(l: addr) = $extype "_Atomic void**"
 
 datavtype pointer_t(a: vt@ype) =
   | pointer_t of node_t(a)
