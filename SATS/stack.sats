@@ -23,6 +23,8 @@ fun copy_pointer {a:vt@ype} (pointer_t(a)) : (pointer_t(a), pointer_t(a))
 
 fun copy_stack {a:vt@ype} (stack_t(a)) : (stack_t(a), stack_t(a))
 
+fun free_stack {a:vt@ype} (stack_t(a)) : void
+
 fun new {a:vt@ype} (&stack_t(a)? >> stack_t(a)) : void
 
 fun {a:vt@ype} push (&stack_t(a) >> stack_t(a), a) : void

@@ -35,6 +35,22 @@ extern
 fn pthread_join(pthread_t, &int? >> int) : int =
   "mac#"
 
+fn par_traverse(dir : string) : void =
+  let
+    fun modify_stack(st : &stack_t(string) >> stack_t(string)) : void =
+      let
+        val opt_res = pop(st)
+        val () = case+ opt_res of
+          | ~None_vt() => ()
+          | ~Some_vt (str) => (push(st, str) ; modify_stack(st))
+      in end
+    
+    var stack: stack_t(string)
+    val () = new(stack)
+    val () = modify_stack(stack)
+    val () = free_stack(stack)
+  in end
+
 fun print_stream(x : stream_vt(string)) : void =
   case+ !x of
     | ~stream_vt_cons (y, ys) => (println!(y) ; print_stream(ys))
