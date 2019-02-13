@@ -86,3 +86,18 @@ implement {a} popm (st) =
     in
       (new_st, None_vt())
     end
+
+implement {a} free_stack (st) =
+  case+ st.stack_head of
+    | ~pointer_t (~node_t (nd)) => 
+      begin
+        let
+          val (pf | aptr) = nd.value
+          val x = atomic_load(pf | aptr)
+          val new_st = @{ stack_head = nd.next }
+          val () = free_gc(x)
+        in
+          free_stack(new_st)
+        end
+      end
+    | ~none_t() => ()

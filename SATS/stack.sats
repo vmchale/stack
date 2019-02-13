@@ -17,13 +17,15 @@ vtypedef stack_t(a: vt@ype) = @{ stack_head = pointer_t(a) }
 
 praxi copy_view {a:vt@ype}{l:addr} (a @ l) : (a @ l, a @ l)
 
+praxi free_gc {a:vt@ype}{l:addr} (a) : void
+
 fun copy_node {a:vt@ype} (node_t(a)) : (node_t(a), node_t(a))
 
 fun copy_pointer {a:vt@ype} (pointer_t(a)) : (pointer_t(a), pointer_t(a))
 
 fun copy_stack {a:vt@ype} (stack_t(a)) : (stack_t(a), stack_t(a))
 
-fun free_stack {a:vt@ype} (stack_t(a)) : void
+fun {a:vt@ype} free_stack (stack_t(a)) : void
 
 fun new {a:vt@ype} (&stack_t(a)? >> stack_t(a)) : void
 
@@ -45,6 +47,8 @@ fn atomic_store {a:vt@ype}{ l : addr | l > null }(a? @ l | aptr(l), a) : (a @ l 
 fn atomic_load {a:vt@ype}{ l : addr | l > null }(a @ l | aptr(l)) : a =
   "mac#"
 
+(* fn atomic_free {a:vt@ype}{l:addr | l > null}(a @ l | aptr(l)) : void  *)
+(* "mac#free" *)
 fn atomic_malloc {a:vt@ype}{ sz : int | sz == sizeof(a) }(sz : size_t(sz)) :
   [ l : addr | l > null ] (a? @ l | aptr(l)) =
   "mac#malloc"

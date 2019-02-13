@@ -37,16 +37,25 @@ fn pthread_join(pthread_t, &int? >> int) : int =
 
 fn par_traverse(dir : string) : void =
   let
+    fn with_entry(st : &stack_t(string) >> stack_t(string), str : string) : void =
+      if test_file_isdir(str) = 1 then
+        push(st, str)
+      else
+        println!(str)
+    
     fun modify_stack(st : &stack_t(string) >> stack_t(string)) : void =
       let
         val opt_res = pop(st)
         val () = case+ opt_res of
+          | ~Some_vt (".") => modify_stack(st)
+          | ~Some_vt ("..") => modify_stack(st)
+          | ~Some_vt (str) => (with_entry(st, str) ; modify_stack(st))
           | ~None_vt() => ()
-          | ~Some_vt (str) => (push(st, str) ; modify_stack(st))
       in end
     
     var stack: stack_t(string)
     val () = new(stack)
+    val () = push(stack, dir)
     val () = modify_stack(stack)
     val () = free_stack(stack)
   in end
@@ -58,8 +67,6 @@ fun print_stream(x : stream_vt(string)) : void =
 
 implement main0 () =
   {
-    val pre_st = newm()
-    
     // TODO: make this a directory traversal? print all files, push all directories
     fn push_pop(s : string, pre_st : stack_t(string)) : void =
       let
@@ -90,5 +97,5 @@ implement main0 () =
         val _ = pthread_join(newthread, res)
       }
     
-    val () = loop_thread(10, pre_st)
+    val () = par_traverse(".")
   }
