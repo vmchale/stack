@@ -61,49 +61,24 @@ fn par_traverse(dir : string) : void =
           | ~None_vt() => ()
       in end
     
+    fun skip_files(x : stream_vt(string)) : void =
+      case+ !x of
+        | ~stream_vt_cons (y, ys) => (skip_files(ys))
+        | ~stream_vt_nil() => ()
+    
+    var newthread: pthread_t
+    var attr: pthread_attr_t
+    val _ = pthread_attr_init(attr)
     var stack: stack_t(string)
     val () = new(stack)
     val () = push(stack, ".")
+    var files = $EXTRA.streamize_dirname_fname(".")
+    val _ = pthread_create(newthread, attr, llam x => skip_files(x), files)
+    var res: int
+    val _ = pthread_join(newthread, res)
     val () = modify_stack(stack)
     val () = free_stack(stack)
   in end
 
-fun print_stream(x : stream_vt(string)) : void =
-  case+ !x of
-    | ~stream_vt_cons (y, ys) => (println!(y) ; print_stream(ys))
-    | ~stream_vt_nil() => ()
-
 implement main0 () =
-  {
-    // TODO: make this a directory traversal? print all files, push all directories
-    fn push_pop(s : string, pre_st : stack_t(string)) : void =
-      let
-        val v = s
-        val st = pushm<string>(pre_st, v)
-        val (_, pulled) = popm(st)
-        val () = case+ pulled of
-          | ~Some_vt (z) => {
-            var files = $EXTRA.streamize_dirname_fname(s)
-            var ffiles = stream_vt_filter_cloptr(files, lam x => test_file_isdir(x) = 0)
-            val () = print_stream(ffiles)
-          }
-          | ~None_vt() => ()
-      in end
-    
-    fun loop_thread {i:nat} .<i>. (i : int(i), pre_st : stack_t(string)) : void =
-      {
-        var newthread: pthread_t
-        var attr: pthread_attr_t
-        val _ = pthread_attr_init(attr)
-        val (pre_st0, pre_st1) = copy_stack(pre_st)
-        val _ = pthread_create(newthread, attr, llam x => push_pop(".", x), pre_st0)
-        var res: int
-        val () = if i = 0 then
-          { val- (_, ~None_vt()) = popm(pre_st1) }
-        else
-          loop_thread(i - 1, pre_st1)
-        val _ = pthread_join(newthread, res)
-      }
-    
-    val () = par_traverse(".")
-  }
+  { val () = par_traverse(".") }
