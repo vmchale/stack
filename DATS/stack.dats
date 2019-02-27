@@ -11,6 +11,7 @@ implement {a} push (st, x) =
     val () = st.stack_head := pointer_t(next_node)
   in end
 
+// FIXME: this frees stuff unsafely I think
 implement {a} pop (st) =
   case+ st.stack_head of
     | ~pointer_t (~node_t (nd)) => 

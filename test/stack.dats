@@ -65,8 +65,8 @@ fn traverse(dir : string) : void =
       let
         var newthread: pthread_t
         var attr: pthread_attr_t
-        val _ = pthread_attr_init(attr)
-        val _ = pthread_create(newthread, attr, lam x => modify_stack(x), st)
+        var _ = pthread_attr_init(attr)
+        var _ = pthread_create(newthread, attr, lam x => modify_stack(x), st)
       in
         newthread
       end
@@ -82,7 +82,7 @@ fn traverse(dir : string) : void =
 
 implement main0 (argc, argv) =
   let
-    val dir = if argc > 1 then
+    var dir = if argc > 1 then
       argv[1]
     else
       "."
