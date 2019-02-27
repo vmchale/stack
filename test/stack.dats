@@ -71,9 +71,24 @@ fn par_traversem(dir : string) : void =
     
     val pre_stack = newm()
     val stack = pushm(pre_stack, ".")
-    val modified = modify_stackm(stack)
-    val () = free_stack(modified)
-  in end
+    val (st0, st1) = copy_stack(stack)
+    
+    fun create_thread(st : stack_t(string)) : void =
+      {
+        var newthread: pthread_t
+        var attr: pthread_attr_t
+        val _ = pthread_attr_init(attr)
+        val _ = pthread_create(newthread, attr, llam x => let
+                                val final_st = modify_stackm(x)
+                              in
+                                free_stack(final_st)
+                              end, st)
+        var res: int
+        val _ = pthread_join(newthread, res)
+      }
+  in
+    (create_thread(st1) ; create_thread(st0))
+  end
 
 fn par_traverse(dir : string) : void =
   let
@@ -114,18 +129,4 @@ fn par_traverse(dir : string) : void =
   in end
 
 implement main0 () =
-  {
-    fun skip_files(x : stream_vt(string)) : void =
-      case+ !x of
-        | ~stream_vt_cons (y, ys) => (skip_files(ys))
-        | ~stream_vt_nil() => ()
-    
-    val () = par_traversem(".")
-    var newthread: pthread_t
-    var attr: pthread_attr_t
-    val _ = pthread_attr_init(attr)
-    var files = $EXTRA.streamize_dirname_fname(".")
-    val _ = pthread_create(newthread, attr, llam x => skip_files(x), files)
-    var res: int
-    val _ = pthread_join(newthread, res)
-  }
+  { val () = par_traversem(".") }
