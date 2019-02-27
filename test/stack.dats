@@ -17,8 +17,8 @@ typedef pthread_attr_t = $extype "pthread_attr_t"
 extern
 fn pthread_create {env:vt@ype}( &pthread_t? >> pthread_t
                               , &pthread_attr_t
-                              , (&env >> env) -> void
-                              , (&env >> env)
+                              , (&env >> _) -> void
+                              , (&env >> _)
                               ) : int =
   "mac#"
 
@@ -61,7 +61,7 @@ fn traverse(dir : string) : void =
           | ~None_vt() => ()
       in end
     
-    fun create_thread(st : &stack_t(string) >> stack_t(string)) : pthread_t =
+    fun create_thread(st : &stack_t(string) >> _) : pthread_t =
       let
         var newthread: pthread_t
         var attr: pthread_attr_t
@@ -74,9 +74,9 @@ fn traverse(dir : string) : void =
     var stack: stack_t(string)
     val () = new(stack)
     val () = push(stack, dir)
-    val i = create_thread(stack)
+    val thread = create_thread(stack)
     var ret: int
-    val _ = pthread_join(i, ret)
+    val _ = pthread_join(thread, ret)
     val () = release_stack(stack)
   }
 
