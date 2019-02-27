@@ -36,8 +36,7 @@ fn par_traversem(dir : string) : void =
       ifcase
         | str = "." => st
         | str = ".." => st
-        | test_file_isdir(parent + "/" + str) = 1 => pushm(st, parent + "/" + str)
-        | _ => (println!(parent + "/" + str) ; st)
+        | _ => pushm(st, parent + "/" + str)
     
     fun modify_stackm(st : stack_t(string)) : stack_t(string) =
       let
@@ -46,25 +45,28 @@ fn par_traversem(dir : string) : void =
         case+ opt_res of
           | ~Some_vt (str) => 
             begin
-              let
-                var files = $EXTRA.streamize_dirname_fname(str)
-                
-                fun stream_act(st : stack_t(string), x : stream_vt(string)) : stack_t(string) =
-                  case+ !x of
-                    | ~stream_vt_cons (y, ys) => 
-                      begin
-                        let
-                          val new_st = with_entrym(st, str, y)
-                        in
-                          stream_act(new_st, ys)
+              if test_file_isdir(str) = 1 then
+                let
+                  var files = $EXTRA.streamize_dirname_fname(str)
+                  
+                  fun stream_act(st : stack_t(string), x : stream_vt(string)) : stack_t(string) =
+                    case+ !x of
+                      | ~stream_vt_cons (y, ys) => 
+                        begin
+                          let
+                            val new_st = with_entrym(st, str, y)
+                          in
+                            stream_act(new_st, ys)
+                          end
                         end
-                      end
-                    | ~stream_vt_nil() => st
-                
-                val act_st = stream_act(new_st, files)
-              in
-                modify_stackm(act_st)
-              end
+                      | ~stream_vt_nil() => st
+                  
+                  val act_st = stream_act(new_st, files)
+                in
+                  modify_stackm(act_st)
+                end
+              else
+                (println!(str) ; modify_stackm(new_st))
             end
           | ~None_vt() => new_st
       end
