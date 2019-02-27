@@ -70,8 +70,7 @@ fn par_traversem(dir : string) : void =
       end
     
     val pre_stack = newm()
-    val stack = pushm(pre_stack, ".")
-    val (st0, st1) = copy_stack(stack)
+    val stack = pushm(pre_stack, dir)
     
     fun create_thread(st : stack_t(string)) : void =
       {
@@ -86,14 +85,25 @@ fn par_traversem(dir : string) : void =
         var res: int
         val _ = pthread_join(newthread, res)
       }
+    
+    fun loop_threads(st : stack_t(string), i : int) : void =
+      if i = 0 then
+        free_stack(st)
+      else
+        let
+          val (st0, st1) = copy_stack(st)
+          val () = create_thread(st0)
+        in
+          loop_threads(st1, i - 1)
+        end
   in
-    (create_thread(st1) ; create_thread(st0))
+    loop_threads(stack, 6)
   end
 
-fn par_traverse(dir : string) : void =
-  let
-    // FIXME handle "." and ".." also do actual traversal?
-    fn with_entry(st : &stack_t(string) >> stack_t(string), parent : string, str : string) : void =
+fn traverse(dir : string) : void =
+  {
+    fn with_entry(st : &stack_t(string) >> stack_t(string), parent : string, str : string) :
+      void =
       ifcase
         | str = "." => ()
         | str = ".." => ()
@@ -126,7 +136,10 @@ fn par_traverse(dir : string) : void =
     val () = push(stack, ".")
     val () = modify_stack(stack)
     val () = free_stack(stack)
-  in end
+  }
 
-implement main0 () =
-  { val () = par_traversem(".") }
+implement main0 (argc, argv) =
+  if argc > 1 then
+    par_traversem(argv[1])
+  else
+    par_traversem(".")
