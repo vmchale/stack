@@ -2,7 +2,6 @@
 #include <stdatomic.h>
 %}
 
-// this is... less than ideal
 typedef aptr(l: addr) = $extype "_Atomic void**"
 
 datavtype pointer_t(a: vt@ype) =
@@ -31,6 +30,6 @@ fn atomic_store {a:vt@ype}{ l : addr | l > null }(a? @ l | aptr(l), a) : (a @ l 
 fn atomic_load {a:vt@ype}{ l : addr | l > null }(a @ l | aptr(l)) : a =
   "mac#"
 
-fn atomic_malloc {a:vt@ype}{ sz : int | sz == sizeof(a) }(sz : size_t(sz)) :
+fn unsafe_malloc {a:vt@ype}{ sz : int | sz == sizeof(a) }(sz : size_t(sz)) :
   [ l : addr | l > null ] (a? @ l | aptr(l)) =
   "mac#malloc"
