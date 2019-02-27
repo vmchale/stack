@@ -7,14 +7,9 @@ staload EXTRA = "libats/ML/SATS/filebas.sats"
 #include "share/HATS/atslib_staload_libats_libc.hats"
 #include "DATS/stack.dats"
 
-%{#
+%{
 #include <pthread.h>
 %}
-
-vtypedef pair = @{ x = int, y = int }
-
-fn print_pair(v : pair) : void =
-  println!("@{ x = " + tostring_int(v.x) + ", y = " + tostring_int(v.y) + " }")
 
 typedef pthread_t = $extype "pthread_t"
 typedef pthread_attr_t = $extype "pthread_attr_t"
@@ -37,25 +32,38 @@ fn pthread_join(pthread_t, &int? >> int) : int =
 
 fn par_traverse(dir : string) : void =
   let
-    fn with_entry(st : &stack_t(string) >> stack_t(string), str : string) : void =
-      if test_file_isdir(str) = 1 then
-        push(st, str)
-      else
-        println!(str)
+    // FIXME handle "." and ".." also do actual traversal?
+    fn with_entry(st : &stack_t(string) >> stack_t(string), parent : string, str : string) : void =
+      ifcase
+        | str = "." => ()
+        | str = ".." => ()
+        | test_file_isdir(str) = 1 => push(st, parent + "/" + str)
+        | _ => println!(parent + "/" + str)
     
     fun modify_stack(st : &stack_t(string) >> stack_t(string)) : void =
       let
         val opt_res = pop(st)
         val () = case+ opt_res of
-          | ~Some_vt (".") => modify_stack(st)
-          | ~Some_vt ("..") => modify_stack(st)
-          | ~Some_vt (str) => (with_entry(st, str) ; modify_stack(st))
+          | ~Some_vt (str) => 
+            begin
+              let
+                var files = $EXTRA.streamize_dirname_fname(str)
+                
+                fun stream_act(st : &stack_t(string) >> stack_t(string), x : stream_vt(string)) : void =
+                  case+ !x of
+                    | ~stream_vt_cons (x, xs) => (with_entry(st, str, x) ; stream_act(st, xs))
+                    | ~stream_vt_nil() => ()
+                
+                val () = stream_act(st, files)
+                val () = modify_stack(st)
+              in end
+            end
           | ~None_vt() => ()
       in end
     
     var stack: stack_t(string)
     val () = new(stack)
-    val () = push(stack, dir)
+    val () = push(stack, ".")
     val () = modify_stack(stack)
     val () = free_stack(stack)
   in end
