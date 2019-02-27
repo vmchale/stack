@@ -54,6 +54,7 @@ fn par_traversem(dir : string) : void =
                       | ~stream_vt_cons (y, ys) => 
                         begin
                           let
+                            // FIXME: push one at a time before popping?
                             val new_st = with_entrym(st, str, y)
                           in
                             stream_act(new_st, ys)
