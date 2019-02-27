@@ -25,7 +25,7 @@ fun copy_pointer {a:vt@ype} (pointer_t(a)) : (pointer_t(a), pointer_t(a))
 
 fun copy_stack {a:vt@ype} (stack_t(a)) : (stack_t(a), stack_t(a))
 
-fun {a:vt@ype} free_stack (stack_t(a)) : void
+castfn release_stack {a:vt@ype} (stack_t(a)) : void
 
 fun new {a:vt@ype} (&stack_t(a)? >> stack_t(a)) : void
 

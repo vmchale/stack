@@ -72,32 +72,36 @@ fn par_traversem(dir : string) : void =
     val pre_stack = newm()
     val stack = pushm(pre_stack, dir)
     
-    fun create_thread(st : stack_t(string)) : void =
-      {
+    fun create_thread(st : stack_t(string)) : pthread_t =
+      let
         var newthread: pthread_t
         var attr: pthread_attr_t
         val _ = pthread_attr_init(attr)
         val _ = pthread_create(newthread, attr, llam x => let
                                 val final_st = modify_stackm(x)
                               in
-                                free_stack(final_st)
+                                release_stack(final_st)
                               end, st)
-        var res: int
-        val _ = pthread_join(newthread, res)
-      }
+      in
+        newthread
+      end
     
-    fun loop_threads(st : stack_t(string), i : int) : void =
+    fun loop_threads {i:nat} .<i>. (st : stack_t(string), i : int(i)) : void =
       if i = 0 then
-        free_stack(st)
+        let
+          var newthread = create_thread(st)
+          var res: int
+          val _ = pthread_join(newthread, res)
+        in end
       else
         let
           val (st0, st1) = copy_stack(st)
-          val () = create_thread(st0)
+          val _ = create_thread(st0)
         in
           loop_threads(st1, i - 1)
         end
   in
-    loop_threads(stack, 6)
+    loop_threads(stack, 5)
   end
 
 fn traverse(dir : string) : void =
@@ -135,11 +139,15 @@ fn traverse(dir : string) : void =
     val () = new(stack)
     val () = push(stack, ".")
     val () = modify_stack(stack)
-    val () = free_stack(stack)
+    val () = release_stack(stack)
   }
 
 implement main0 (argc, argv) =
-  if argc > 1 then
-    par_traversem(argv[1])
-  else
-    par_traversem(".")
+  let
+    val dir = if argc > 1 then
+      argv[1]
+    else
+      "."
+  in
+    par_traversem(dir)
+  end
