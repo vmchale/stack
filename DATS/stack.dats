@@ -92,10 +92,13 @@ implement {a} free_stack (st) =
     | ~pointer_t (~node_t (nd)) => 
       begin
         let
+          extern
+          castfn space_leak {a:vt@ype} (x : a) : void
+          
           val (pf | aptr) = nd.value
           val x = atomic_load(pf | aptr)
           val new_st = @{ stack_head = nd.next }
-          val () = free_gc(x)
+          val () = space_leak(x)
         in
           free_stack(new_st)
         end

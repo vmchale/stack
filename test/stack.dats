@@ -30,6 +30,51 @@ extern
 fn pthread_join(pthread_t, &int? >> int) : int =
   "mac#"
 
+fn par_traversem(dir : string) : void =
+  let
+    fn with_entrym(st : stack_t(string), parent : string, str : string) : stack_t(string) =
+      ifcase
+        | str = "." => st
+        | str = ".." => st
+        | test_file_isdir(parent + "/" + str) = 1 => pushm(st, parent + "/" + str)
+        | _ => (println!(parent + "/" + str) ; st)
+    
+    fun modify_stackm(st : stack_t(string)) : stack_t(string) =
+      let
+        val (new_st, opt_res) = popm(st)
+      in
+        case+ opt_res of
+          | ~Some_vt (str) => 
+            begin
+              let
+                var files = $EXTRA.streamize_dirname_fname(str)
+                
+                fun stream_act(st : stack_t(string), x : stream_vt(string)) : stack_t(string) =
+                  case+ !x of
+                    | ~stream_vt_cons (y, ys) => 
+                      begin
+                        let
+                          val new_st = with_entrym(st, str, y)
+                        in
+                          stream_act(new_st, ys)
+                        end
+                      end
+                    | ~stream_vt_nil() => st
+                
+                val act_st = stream_act(new_st, files)
+              in
+                modify_stackm(act_st)
+              end
+            end
+          | ~None_vt() => new_st
+      end
+    
+    val pre_stack = newm()
+    val stack = pushm(pre_stack, ".")
+    val modified = modify_stackm(stack)
+    val () = free_stack(modified)
+  in end
+
 fn par_traverse(dir : string) : void =
   let
     // FIXME handle "." and ".." also do actual traversal?
@@ -75,7 +120,7 @@ implement main0 () =
         | ~stream_vt_cons (y, ys) => (skip_files(ys))
         | ~stream_vt_nil() => ()
     
-    val () = par_traverse(".")
+    val () = par_traversem(".")
     var newthread: pthread_t
     var attr: pthread_attr_t
     val _ = pthread_attr_init(attr)
