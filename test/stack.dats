@@ -37,7 +37,7 @@ fn par_traverse(dir : string) : void =
       ifcase
         | str = "." => ()
         | str = ".." => ()
-        | test_file_isdir(str) = 1 => push(st, parent + "/" + str)
+        | test_file_isdir(parent + "/" + str) = 1 => push(st, parent + "/" + str)
         | _ => println!(parent + "/" + str)
     
     fun modify_stack(st : &stack_t(string) >> stack_t(string)) : void =
