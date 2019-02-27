@@ -61,24 +61,26 @@ fn par_traverse(dir : string) : void =
           | ~None_vt() => ()
       in end
     
-    fun skip_files(x : stream_vt(string)) : void =
-      case+ !x of
-        | ~stream_vt_cons (y, ys) => (skip_files(ys))
-        | ~stream_vt_nil() => ()
-    
-    var newthread: pthread_t
-    var attr: pthread_attr_t
-    val _ = pthread_attr_init(attr)
     var stack: stack_t(string)
     val () = new(stack)
     val () = push(stack, ".")
-    var files = $EXTRA.streamize_dirname_fname(".")
-    val _ = pthread_create(newthread, attr, llam x => skip_files(x), files)
-    var res: int
-    val _ = pthread_join(newthread, res)
     val () = modify_stack(stack)
     val () = free_stack(stack)
   in end
 
 implement main0 () =
-  { val () = par_traverse(".") }
+  {
+    fun skip_files(x : stream_vt(string)) : void =
+      case+ !x of
+        | ~stream_vt_cons (y, ys) => (skip_files(ys))
+        | ~stream_vt_nil() => ()
+    
+    val () = par_traverse(".")
+    var newthread: pthread_t
+    var attr: pthread_attr_t
+    val _ = pthread_attr_init(attr)
+    var files = $EXTRA.streamize_dirname_fname(".")
+    val _ = pthread_create(newthread, attr, llam x => skip_files(x), files)
+    var res: int
+    val _ = pthread_join(newthread, res)
+  }
