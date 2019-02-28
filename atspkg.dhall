@@ -6,6 +6,7 @@ in prelude.default ⫽
       { src = "test/stack.dats"
       , target = "${prelude.atsProject}/stack"
       , libs = [ "pthread" ]
+      , gcBin = True
       }
     ]
   }

@@ -6,6 +6,21 @@ this works.
 I'd like to have a type-generic atomic pointer as well, but that seems
 infeasible at the moment.
 
+## Building
+
+I use [`atspkg`](http://hackage.haskell.org/package/ats-pkg) to build/hack on
+this; you can install it with
+
+```
+curl -sSl https://raw.githubusercontent.com/vmchale/atspkg/master/bash/install.sh | sh -s
+```
+
+And then run the test suite with
+
+```
+atspkg test
+```
+
 ## Contents
 
 ```
