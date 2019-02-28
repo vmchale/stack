@@ -30,6 +30,6 @@ fn atomic_store {a:vt@ype}{ l : addr | l > null }(a? @ l | aptr(l), a) : (a @ l 
 fn atomic_load {a:vt@ype}{ l : addr | l > null }(a @ l | aptr(l)) : a =
   "mac#"
 
-fn unsafe_malloc {a:vt@ype}{ sz : int | sz == sizeof(a) }(sz : size_t(sz)) :
+fn leaky_malloc {a:vt@ype}{ sz : int | sz == sizeof(a) }(sz : size_t(sz)) :
   [ l : addr | l > null ] (a? @ l | aptr(l)) =
   "mac#malloc"

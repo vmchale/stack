@@ -5,7 +5,7 @@ implement new (st) =
 
 implement {a} push (st, x) =
   let
-    val (pf_pre | ptr) = unsafe_malloc(sizeof<a>)
+    val (pf_pre | ptr) = leaky_malloc(sizeof<a>)
     val (pf | ()) = atomic_store(pf_pre | ptr, x)
     val next_node = node_t(@{ value = (pf | ptr), next = st.stack_head })
     val () = st.stack_head := pointer_t(next_node)
