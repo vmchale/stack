@@ -37,8 +37,7 @@ fn traverse(dir : string) : void =
       ifcase
         | str = "." => ()
         | str = ".." => ()
-        | test_file_isdir(parent + "/" + str) = 1 => push(st, parent + "/" + str)
-        | _ => println!(parent + "/" + str)
+        | _ => push(st, parent + "/" + str)
     
     fun modify_stack(st : &stack_t(string) >> stack_t(string)) : void =
       let
@@ -46,17 +45,20 @@ fn traverse(dir : string) : void =
         val () = case+ opt_res of
           | ~Some_vt (str) => 
             begin
-              let
-                var files = $EXTRA.streamize_dirname_fname(str)
-                
-                fun stream_act(st : &stack_t(string) >> stack_t(string), x : stream_vt(string)) : void =
-                  case+ !x of
-                    | ~stream_vt_cons (x, xs) => (with_entry(st, str, x) ; stream_act(st, xs))
-                    | ~stream_vt_nil() => ()
-                
-                val () = stream_act(st, files)
-                val () = modify_stack(st)
-              in end
+              if test_file_isdir(str) = 1 then
+                let
+                  var files = $EXTRA.streamize_dirname_fname(str)
+                  
+                  fun stream_act(st : &stack_t(string) >> stack_t(string), x : stream_vt(string)) : void =
+                    case+ !x of
+                      | ~stream_vt_cons (x, xs) => (with_entry(st, str, x) ; stream_act(st, xs))
+                      | ~stream_vt_nil() => ()
+                  
+                  val () = stream_act(st, files)
+                  val () = modify_stack(st)
+                in end
+              else
+                (println!(str) ; modify_stack(st))
             end
           | ~None_vt() => ()
       in end
