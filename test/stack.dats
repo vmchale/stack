@@ -41,7 +41,7 @@ fn traverse(dir : string) : void =
     
     fun modify_stack(st : &stack_t(string) >> stack_t(string)) : void =
       let
-        val opt_res = pop(st)
+        var opt_res = pop(st)
         val () = case+ opt_res of
           | ~Some_vt (str) => 
             begin
@@ -76,9 +76,9 @@ fn traverse(dir : string) : void =
     var stack: stack_t(string)
     val () = new(stack)
     val () = push(stack, dir)
-    val thread = create_thread(stack)
+    var thread = create_thread(stack)
     var ret: int
-    val _ = pthread_join(thread, ret)
+    var _ = pthread_join(thread, ret)
     val () = release_stack(stack)
   }
 
