@@ -8,6 +8,8 @@ implement {a} push (st, x) =
     val (pf_pre | ptr) = leaky_malloc(sizeof<a>)
     val (pf | ()) = atomic_store(pf_pre | ptr, x)
     var next_node = node_t(@{ value = (pf | ptr), next = st.stack_head })
+    
+    // TODO: should this be atomic?
     val () = st.stack_head := pointer_t(next_node)
   in end
 
