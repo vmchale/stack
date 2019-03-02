@@ -12,13 +12,15 @@ implement {a} push (st, x) =
   in end
 
 // FIXME: this frees stuff unsafely, at least when working with multiple threads
+// TODO: free none_t appropriately
 implement {a} pop (st) =
   case+ st.stack_head of
-    | ~pointer_t (~node_t (nd)) => 
+    | @pointer_t (~node_t (nd)) => 
       begin
         let
           val (pf | aptr) = nd.value
           var x = atomic_load(pf | aptr)
+          val () = free@{a}(st.stack_head)
           val () = st.stack_head := nd.next
         in
           Some_vt(x)
