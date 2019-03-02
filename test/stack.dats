@@ -91,12 +91,15 @@ fn traverse(dir : string) : void =
     
     fun wait(threads : List0_vt(pthread_t)) : void =
       case+ threads of
-        | ~list_vt_cons (x, xs) => let
-          var ret: int
-          var _ = pthread_join(x, ret)
-        in
-          wait(xs)
-        end
+        | ~list_vt_cons (x, xs) => 
+          begin
+            let
+              var ret: int
+              var _ = pthread_join(x, ret)
+            in
+              wait(xs)
+            end
+          end
         | ~list_vt_nil() => ()
     
     var stack: stack_t(string)
