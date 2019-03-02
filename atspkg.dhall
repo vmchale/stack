@@ -9,4 +9,5 @@ in prelude.default ⫽
       , gcBin = True
       }
     ]
+  , cflags = [ "-O2" ]
   }
