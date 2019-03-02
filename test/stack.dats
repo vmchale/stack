@@ -73,12 +73,37 @@ fn traverse(dir : string) : void =
         newthread
       end
     
+    fun loop { i : nat | i >= 1 } .<i>. (st : &stack_t(string) >> _, i : int(i)) :
+      List0_vt(pthread_t) =
+      if i = 1 then
+        let
+          var thread = create_thread(st)
+        in
+          list_vt_cons(thread, list_vt_nil())
+        end
+      else
+        let
+          var acc = loop(st, i - 1)
+          var thread = create_thread(st)
+        in
+          list_vt_cons(thread, acc)
+        end
+    
+    fun wait(threads : List0_vt(pthread_t)) : void =
+      case+ threads of
+        | ~list_vt_cons (x, xs) => let
+          var ret: int
+          var _ = pthread_join(x, ret)
+        in
+          wait(xs)
+        end
+        | ~list_vt_nil() => ()
+    
     var stack: stack_t(string)
     val () = new(stack)
     val () = push(stack, dir)
-    var thread = create_thread(stack)
-    var ret: int
-    var _ = pthread_join(thread, ret)
+    var threads = loop(stack, 1)
+    val () = wait(threads)
     val () = release_stack(stack)
   }
 
