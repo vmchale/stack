@@ -20,7 +20,7 @@ implement {a} pop (st) =
         let
           val (pf | aptr) = nd.value
           var x = atomic_load(pf | aptr)
-          val () = free@{a}(st.stack_head)
+          val () = free@(st.stack_head)
           val () = st.stack_head := nd.next
         in
           Some_vt(x)
