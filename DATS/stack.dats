@@ -5,9 +5,9 @@ implement new (st) =
 
 implement {a} push (st, x) =
   let
-    val (pf_pre | ptr) = leaky_malloc(sizeof<a>)
+    val (pf_pre, pf_free | ptr) = amalloc(sizeof<a>)
     val (pf | ()) = atomic_store(pf_pre | ptr, x)
-    var next_node = node_t(@{ value = (pf | ptr), next = st.stack_head })
+    var next_node = node_t(@{ value = (pf, pf_free | ptr), next = st.stack_head })
     
     // TODO: should this be atomic?
     val () = st.stack_head := pointer_t(next_node)
@@ -20,8 +20,8 @@ implement {a} pop (st) =
     | @pointer_t (~node_t (nd)) => 
       begin
         let
-          val (pf | aptr) = nd.value
-          var x = atomic_load(pf | aptr)
+          val (pf, pf_free | aptr) = nd.value
+          var x = atomic_load(pf, pf_free | aptr)
           val () = free@(st.stack_head)
           val () = st.stack_head := nd.next
         in

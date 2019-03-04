@@ -4,11 +4,13 @@
 
 typedef aptr(l: addr) = $extype "_Atomic void**"
 
+absview pf_free(l: addr)
+
 datavtype pointer_t(a: vt@ype) =
   | pointer_t of node_t(a)
   | none_t
 and node_t(a: vt@ype) =
-  | node_t of @{ value = [ l : addr | l > null ] (a @ l | aptr(l))
+  | node_t of @{ value = [ l : addr | l > null ] (a @ l, pf_free(l)| aptr(l))
                , next = pointer_t(a)
                }
 
@@ -25,9 +27,10 @@ fun {a:vt@ype} pop (&stack_t(a) >> _) : Option_vt(a)
 fn atomic_store {a:vt@ype}{ l : addr | l > null }(a? @ l | aptr(l), a) : (a @ l | void) =
   "mac#"
 
-fn atomic_load {a:vt@ype}{ l : addr | l > null }(a @ l | aptr(l)) : a =
+// FIXME: should this return a pf_free?
+fn atomic_load {a:vt@ype}{ l : addr | l > null }(a @ l, pf_free(l) | aptr(l)) : a =
   "mac#"
 
-fn leaky_malloc {a:vt@ype}{ sz : int | sz == sizeof(a) }(sz : size_t(sz)) :
-  [ l : addr | l > null ] (a? @ l | aptr(l)) =
+fn amalloc {a:vt@ype}{ sz : int | sz == sizeof(a) }(sz : size_t(sz)) :
+  [ l : addr | l > null ] (a? @ l, pf_free(l)| aptr(l)) =
   "mac#malloc"
