@@ -1,31 +1,29 @@
 staload "SATS/stack.sats"
 
 implement new (st) =
-  st.stack_head := none_t
+  st := nil()
 
 implement {a} push (st, x) =
   let
-    val (pf_pre, pf_free | ptr) = amalloc(sizeof<a>)
-    val (pf | ()) = atomic_store(pf_pre | ptr, x)
-    var next_node = node_t(@{ value = (pf, pf_free | ptr), next = st.stack_head })
-    
-    // TODO: should this be atomic?
-    val () = st.stack_head := pointer_t(next_node)
-  in end
+    var xs0 = st
+    var xs1 = cons(x, xs0)
+  in
+    if atomic_compare_exchange(st, xs0, xs1) then
+      ()
+    else
+      push(st, x)
+  end
 
 // FIXME: this frees stuff unsafely, at least when working with multiple threads
 // TODO: free none_t appropriately
 implement {a} pop (st) =
-  case+ st.stack_head of
-    | @pointer_t (~node_t (nd)) => 
-      begin
-        let
-          val (pf, pf_free | aptr) = nd.value
-          var x = atomic_load(pf, pf_free | aptr)
-          val () = free@(st.stack_head)
-          val () = st.stack_head := nd.next
-        in
-          Some_vt(x)
-        end
-      end
-    | none_t() => None_vt()
+  let
+    var xs0 = st
+  in
+    case+ xs0 of
+      | nil() => None()
+      | cons (x, xs1) => if atomic_compare_exchange(st, xs0, xs1) then
+        Some(x)
+      else
+        pop(st)
+  end

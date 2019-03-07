@@ -2,35 +2,15 @@
 #include <stdatomic.h>
 %}
 
-typedef aptr(l: addr) = $extype "_Atomic void**"
+datatype stack_t(a: t@ype+) =
+  | cons of (a, stack_t(a))
+  | nil of ()
 
-absview pf_free(l: addr)
+fun new {a:t@ype} (&stack_t(a)? >> stack_t(a)) : void
 
-datavtype pointer_t(a: vt@ype) =
-  | pointer_t of node_t(a)
-  | none_t
-and node_t(a: vt@ype) =
-  | node_t of @{ value = [ l : addr | l > null ] (a @ l, pf_free(l)| aptr(l))
-               , next = pointer_t(a)
-               }
+fun {a:t@ype} push (&stack_t(a) >> stack_t(a), a) : void
 
-vtypedef stack_t(a: vt@ype) = @{ stack_head = pointer_t(a) }
+fun {a:t@ype} pop (&stack_t(a) >> stack_t(a)) : Option(a)
 
-castfn release_stack {a:vt@ype} (stack_t(a)) : void
-
-fun new {a:vt@ype} (&stack_t(a)? >> stack_t(a)) : void
-
-fun {a:vt@ype} push (&stack_t(a) >> stack_t(a), a) : void
-
-fun {a:vt@ype} pop (&stack_t(a) >> _) : Option_vt(a)
-
-fn atomic_store {a:vt@ype}{ l : addr | l > null }(a? @ l | aptr(l), a) : (a @ l | void) =
-  "mac#"
-
-// FIXME: should this return a pf_free?
-fn atomic_load {a:vt@ype}{ l : addr | l > null }(a @ l, pf_free(l) | aptr(l)) : a =
-  "mac#"
-
-fn amalloc {a:vt@ype}{ sz : int | sz == sizeof(a) }(sz : size_t(sz)) :
-  [ l : addr | l > null ] (a? @ l, pf_free(l)| aptr(l)) =
-  "mac#malloc"
+fn atomic_compare_exchange {a:t@ype}(&a >> _, a, a) : bool =
+  "ext#atomic_compare_exchange_strong"

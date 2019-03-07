@@ -42,9 +42,12 @@ fn traverse(dir : string) : void =
     fun modify_stack(st : &stack_t(string) >> stack_t(string)) : void =
       let
         var pre_opt = pop(st)
+        
+        fn print_str(x : string) : void =
+          println!(x)
       in
         case+ pre_opt of
-          | ~Some_vt (str) => 
+          | Some (str) => 
             begin
               if test_file_isdir(str) = 1 then
                 let
@@ -59,9 +62,9 @@ fn traverse(dir : string) : void =
                   val () = modify_stack(st)
                 in end
               else
-                (println!(str) ; modify_stack(st))
+                (print_str(str) ; modify_stack(st))
             end
-          | ~None_vt() => ()
+          | None() => ()
       end
     
     fun create_thread(st : &stack_t(string) >> _) : pthread_t =
@@ -108,7 +111,6 @@ fn traverse(dir : string) : void =
     val () = push(stack, dir)
     var threads = loop(stack, 1)
     val () = wait(threads)
-    val () = release_stack(stack)
   }
 
 implement main0 (argc, argv) =
