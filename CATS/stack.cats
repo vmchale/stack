@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdlib.h>
 #include <stdatomic.h>
 
 struct stack_t {
@@ -7,6 +8,7 @@ struct stack_t {
 };
 
 void stack_init(struct stack_t *st) {
+    st = malloc(sizeof(st));
     st->value = NULL;
     st->next = NULL;
 }
