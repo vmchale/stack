@@ -5,10 +5,11 @@ staload EXTRA = "libats/ML/SATS/filebas.sats"
 #include "share/atspre_staload.hats"
 #include "share/HATS/atspre_staload_libats_ML.hats"
 #include "share/HATS/atslib_staload_libats_libc.hats"
-#include "DATS/stack.dats"
 
 %{
 #include <pthread.h>
+
+#include "CATS/stack.cats"
 %}
 
 typedef pthread_t = $extype "pthread_t"
