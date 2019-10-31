@@ -2,7 +2,7 @@ datatype stack_t(a: t@ype+) =
   | cons of (a, stack_t(a))
   | nil
 
-fun new {a:t@ype} (&stack_t(a)? >> stack_t(a)) : void
+fn new {a:t@ype} (&stack_t(a)? >> stack_t(a)) : void
 
 fun push {a:t@ype} (&stack_t(a) >> stack_t(a), a) : void
 

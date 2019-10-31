@@ -19,7 +19,7 @@ implement pop (st) =
     var xs0 = st
   in
     case+ xs0 of
-      | nil() => None()
+      | nil() => None
       | cons (x, xs1) => if atomic_compare_exchange(st, xs0, xs1) then
         Some(x)
       else
