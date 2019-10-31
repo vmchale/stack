@@ -1,7 +1,7 @@
 staload "SATS/stack.sats"
 
 implement new (st) =
-  st := nil()
+  st := nil
 
 implement {a} push (st, x) =
   let
@@ -14,8 +14,6 @@ implement {a} push (st, x) =
       push(st, x)
   end
 
-// FIXME: this frees stuff unsafely, at least when working with multiple threads
-// TODO: free none_t appropriately
 implement {a} pop (st) =
   let
     var xs0 = st
