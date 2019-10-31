@@ -1,7 +1,3 @@
-%{#
-#include <stdatomic.h>
-%}
-
 datatype stack_t(a: t@ype+) =
   | cons of (a, stack_t(a))
   | nil

@@ -9,6 +9,7 @@ staload EXTRA = "libats/ML/SATS/filebas.sats"
 
 %{
 #include <pthread.h>
+#include <stdatomic.h>
 %}
 
 typedef pthread_t = $extype "pthread_t"
