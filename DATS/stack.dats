@@ -3,7 +3,7 @@ staload "SATS/stack.sats"
 implement new (st) =
   st := nil
 
-implement {a} push (st, x) =
+implement push (st, x) =
   let
     var xs0 = st
     var xs1 = cons(x, xs0)
@@ -14,7 +14,7 @@ implement {a} push (st, x) =
       push(st, x)
   end
 
-implement {a} pop (st) =
+implement pop (st) =
   let
     var xs0 = st
   in

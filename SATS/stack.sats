@@ -8,9 +8,9 @@ datatype stack_t(a: t@ype+) =
 
 fun new {a:t@ype} (&stack_t(a)? >> stack_t(a)) : void
 
-fun {a:t@ype} push (&stack_t(a) >> stack_t(a), a) : void
+fun push {a:t@ype} (&stack_t(a) >> stack_t(a), a) : void
 
-fun {a:t@ype} pop (&stack_t(a) >> stack_t(a)) : Option(a)
+fun pop {a:t@ype} (&stack_t(a) >> stack_t(a)) : Option(a)
 
 fn atomic_compare_exchange {a:t@ype}(&a >> _, a, a) : bool =
   "mac#atomic_compare_exchange_strong"
