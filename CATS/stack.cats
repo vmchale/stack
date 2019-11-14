@@ -8,12 +8,6 @@ struct stack_t {
     struct stack_t *next;
 };
 
-void stack_init(struct stack_t *st) {
-    /* st = malloc(sizeof(st)); */
-    st->value = NULL;
-    st->next = NULL;
-}
-
 void push(struct stack_t *st, void *val) {
     for (;;) {
         struct stack_t old_st = *st;
@@ -23,7 +17,6 @@ void push(struct stack_t *st, void *val) {
     }
 }
 
-// __ATOMIC_SEQ_CST
 void *pop(struct stack_t *st) {
     for (;;) {
         struct stack_t *old_st = st;
