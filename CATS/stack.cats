@@ -1,12 +1,15 @@
 #include <stdatomic.h>
-#include <stddef.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 struct stack_t {
     void *value;
     struct stack_t *next;
 };
+
+void new (struct stack_t *st) {
+    st->value = NULL;
+    st->next = NULL;
+}
 
 void push(struct stack_t *st, void *val) {
     for (;;) {
