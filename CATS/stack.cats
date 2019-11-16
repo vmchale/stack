@@ -6,12 +6,12 @@ struct stack_t {
     struct stack_t *next;
 };
 
-void new (struct stack_t *st) {
+void __cats_new (struct stack_t *st) {
     st->value = NULL;
     st->next = NULL;
 }
 
-void push(struct stack_t *st, void *val) {
+void __cats_push(struct stack_t *st, void *val) {
     for (;;) {
         struct stack_t old_st = *st;
         struct stack_t new_st = {val, &old_st};
@@ -20,7 +20,7 @@ void push(struct stack_t *st, void *val) {
     }
 }
 
-void *pop(struct stack_t *st) {
+void *__cats_pop(struct stack_t *st) {
     for (;;) {
         struct stack_t *old_st = st;
         struct stack_t xs1 = *(st->next);
@@ -29,3 +29,17 @@ void *pop(struct stack_t *st) {
             return x;
     }
 }
+
+#ifdef PATS_CCOMP_CONFIG_H
+atstype_boxed pop_ats(atstype_ref st) {
+    __cats_pop(st);
+}
+
+atsvoid_t0ype new_ats(atstype_ref st) {
+    __cats_new(st);
+}
+
+atsvoid_t0ype push_ats(atstype_ref st, atstype_var val) {
+    __cats_push(st, val);
+}
+#endif

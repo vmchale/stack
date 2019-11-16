@@ -5,7 +5,7 @@ in prelude.default ⫽
     [ prelude.bin ⫽
       { src = "test/stack.dats"
       , target = "${prelude.atsProject}/stack"
-      , libs = [ "pthread" ]
+      , libs = [ "pthread", "atomic" ]
       , gcBin = True
       }
     ]
