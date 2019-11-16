@@ -34,7 +34,7 @@ void *__cats_pop(struct stack_t *st) {
 
 #ifdef PATS_CCOMP_CONFIG_H
 atstype_boxed pop_ats(atstype_ref st) {
-    __cats_pop(st);
+    return __cats_pop(st);
 }
 
 atsvoid_t0ype new_ats(atstype_ref st) {
