@@ -22,6 +22,8 @@ void __cats_push(struct stack_t *st, void *val) {
 
 void *__cats_pop(struct stack_t *st) {
     for (;;) {
+        if (st->next == NULL)
+            return NULL;
         struct stack_t *old_st = st;
         struct stack_t xs1 = *(st->next);
         void *x = st->value;
