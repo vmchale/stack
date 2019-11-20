@@ -1,10 +1,10 @@
-typedef stack_t(a: t@ype+) = $extype "struct stack_t"
+typedef stack_t(a: type) = $extype "struct stack_t"
 
-fun new {a:t@ype+}(&stack_t(a)? >> _) : void =
+fun new {a:type}(&stack_t(a)? >> _) : void =
   "ext#new_ats"
 
-fun push {a:t@ype+}(&stack_t(a) >> _, a) : void =
+fun push {a:type}(&stack_t(a) >> _, a) : void =
   "ext#push_ats"
 
-fun pop {a:t@ype+}(&stack_t(a) >> _) : Option(a) =
+fun pop {a:type}(&stack_t(a) >> _) : Option(a) =
   "ext#pop_ats"

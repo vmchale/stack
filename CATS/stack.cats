@@ -20,6 +20,9 @@ void __cats_push(struct stack_t *st, void *val) {
     }
 }
 
+// This DOES suffer the ABA problem, viz.
+// http://15418.courses.cs.cmu.edu/spring2013/article/46,
+// however, I think it's okay in our particular use case
 void *__cats_pop(struct stack_t *st) {
     for (;;) {
         if (st->next == NULL)
@@ -33,11 +36,19 @@ void *__cats_pop(struct stack_t *st) {
 }
 
 #ifdef PATS_CCOMP_CONFIG_H
-atstype_boxed pop_ats(atstype_ref st) { return __cats_pop(st); }
+atstype_boxed __cats_some(atstype_boxed val);
+atstype_boxed __cats_none();
+
+atstype_boxed pop_ats(atstype_ref st) {
+    void *ret = __cats_pop(st);
+    if (ret == NULL)
+        return __cats_none();
+    return __cats_some(ret);
+}
 
 atsvoid_t0ype new_ats(atstype_ref st) { __cats_new(st); }
 
-atsvoid_t0ype push_ats(atstype_ref st, atstype_var val) {
+atsvoid_t0ype push_ats(atstype_ref st, atstype_boxed val) {
     __cats_push(st, val);
 }
 #endif
