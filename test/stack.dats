@@ -5,8 +5,15 @@ staload EXTRA = "libats/ML/SATS/filebas.sats"
 #include "share/atspre_staload.hats"
 #include "share/HATS/atspre_staload_libats_ML.hats"
 #include "share/HATS/atslib_staload_libats_libc.hats"
+#include "DATS/ffi.dats"
 
 %{
+#ifdef ATS_MEMALLOC_GCBDW
+#undef GC_H
+#define GC_THREADS
+#include <gc/gc.h>
+#endif
+
 #include <pthread.h>
 
 #include "CATS/stack.cats"
