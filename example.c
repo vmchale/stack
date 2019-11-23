@@ -12,6 +12,10 @@ int main(int argc, char *argv[]) {
     char *res;
 
     res = __cats_pop(st);
+    __cats_push(st, "res");
+    printf("%s\n", res);
+
+    res = __cats_pop(st);
     printf("%s\n", res);
 
     res = __cats_pop(st);
