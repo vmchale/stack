@@ -48,7 +48,7 @@ fn traverse(dir : string) : void =
         | str = ".." => ()
         | _ => push(st, parent + "/" + str)
 
-    fn with_file(fp : string)=
+    fn with_file(fp : string) : void =
       println!(fp)
 
     fun modify_stack(st : &stack_t(string) >> stack_t(string)) : void =
