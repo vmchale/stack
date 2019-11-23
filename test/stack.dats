@@ -71,7 +71,6 @@ fn traverse(dir : string) : void =
                   val () = modify_stack(st)
                 in end
               else
-                // as soon as we pop a file (not a dir) -> stops??
                 (with_file(str) ; modify_stack(st))
             end
           | None() => ()
