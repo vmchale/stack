@@ -47,36 +47,36 @@ fn traverse(dir : string) : void =
         | str = "." => ()
         | str = ".." => ()
         | _ => push(st, parent + "/" + str)
-    
+
+    fn with_file(fp : string)=
+      println!(fp)
+
     fun modify_stack(st : &stack_t(string) >> stack_t(string)) : void =
       let
         var pre_opt = pop(st)
-        
-        fn print_str(x : string) : void =
-          println!(x)
       in
         case+ pre_opt of
-          | Some (str) => 
+          | Some (str) =>
             begin
               if test_file_isdir(str) = 1 then
                 let
                   var files = $EXTRA.streamize_dirname_fname(str)
-                  
+
                   fun stream_act(st : &stack_t(string) >> stack_t(string), x : stream_vt(string)) : void =
                     case+ !x of
                       | ~stream_vt_cons (x, xs) => (with_entry(st, str, x) ; stream_act(st, xs))
                       | ~stream_vt_nil() => ()
-                  
+
                   val () = stream_act(st, files)
                   val () = modify_stack(st)
                 in end
               else
                 // as soon as we pop a file (not a dir) -> stops??
-                (print_str(str) ; modify_stack(st))
+                (with_file(str) ; modify_stack(st))
             end
           | None() => ()
       end
-    
+
     fun create_thread(st : &stack_t(string) >> _) : pthread_t =
       let
         var newthread: pthread_t
@@ -86,7 +86,7 @@ fn traverse(dir : string) : void =
       in
         newthread
       end
-    
+
     fun loop { i : nat | i >= 1 } .<i>. (st : &stack_t(string) >> _, i : int(i)) :
       List0_vt(pthread_t) =
       if i = 1 then
@@ -103,10 +103,10 @@ fn traverse(dir : string) : void =
         in
           list_vt_cons(thread, acc)
         end
-    
+
     fun wait(threads : List0_vt(pthread_t)) : void =
       case+ threads of
-        | ~list_vt_cons (x, xs) => 
+        | ~list_vt_cons (x, xs) =>
           begin
             let
               var ret: int
@@ -116,7 +116,7 @@ fn traverse(dir : string) : void =
             end
           end
         | ~list_vt_nil() => ()
-    
+
     var stack: stack_t(string)
     val () = new(stack)
     val () = push(stack, dir)
