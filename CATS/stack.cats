@@ -33,7 +33,6 @@ void *__cats_pop(struct stack_t *st) {
             return NULL;
         struct stack_t *xs1 = st->next;
         void *x = st->value;
-        // FIXME: cyclic stack?
         if (atomic_compare_exchange_strong(st, pre_st, *xs1))
             return x;
     }
