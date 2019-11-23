@@ -1,5 +1,4 @@
 #include <stdatomic.h>
-#include <stdbool.h>
 #include <stdlib.h>
 
 struct stack_t {
