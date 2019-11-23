@@ -1,6 +1,7 @@
 staload "SATS/stack.sats"
 staload "libats/ML/SATS/string.sats"
 staload EXTRA = "libats/ML/SATS/filebas.sats"
+staload "libats/libc/SATS/unistd.sats"
 
 #include "share/atspre_staload.hats"
 #include "share/HATS/atspre_staload_libats_ML.hats"
@@ -91,6 +92,7 @@ fn traverse(dir : string) : void =
       if i = 1 then
         let
           var thread = create_thread(st)
+          val _ = usleep(90u)
         in
           list_vt_cons(thread, list_vt_nil())
         end
@@ -118,7 +120,7 @@ fn traverse(dir : string) : void =
     var stack: stack_t(string)
     val () = new(stack)
     val () = push(stack, dir)
-    var threads = loop(stack, 1)
+    var threads = loop(stack, 6)
     val () = wait(threads)
   }
 
