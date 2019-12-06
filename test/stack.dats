@@ -1,6 +1,7 @@
 staload "SATS/stack.sats"
 staload "libats/ML/SATS/string.sats"
 staload EXTRA = "libats/ML/SATS/filebas.sats"
+staload "libats/libc/SATS/unistd.sats"
 
 #include "share/atspre_staload.hats"
 #include "share/HATS/atspre_staload_libats_ML.hats"
@@ -46,35 +47,35 @@ fn traverse(dir : string) : void =
         | str = "." => ()
         | str = ".." => ()
         | _ => push(st, parent + "/" + str)
-    
+
+    fn with_file(fp : string) : void =
+      println!(fp)
+
     fun modify_stack(st : &stack_t(string) >> stack_t(string)) : void =
       let
         var pre_opt = pop(st)
-        
-        fn print_str(x : string) : void =
-          println!(x)
       in
         case+ pre_opt of
-          | Some (str) => 
+          | Some (str) =>
             begin
               if test_file_isdir(str) = 1 then
                 let
                   var files = $EXTRA.streamize_dirname_fname(str)
-                  
+
                   fun stream_act(st : &stack_t(string) >> stack_t(string), x : stream_vt(string)) : void =
                     case+ !x of
                       | ~stream_vt_cons (x, xs) => (with_entry(st, str, x) ; stream_act(st, xs))
                       | ~stream_vt_nil() => ()
-                  
+
                   val () = stream_act(st, files)
                   val () = modify_stack(st)
                 in end
               else
-                (print_str(str) ; modify_stack(st))
+                (with_file(str) ; modify_stack(st))
             end
           | None() => ()
       end
-    
+
     fun create_thread(st : &stack_t(string) >> _) : pthread_t =
       let
         var newthread: pthread_t
@@ -84,12 +85,13 @@ fn traverse(dir : string) : void =
       in
         newthread
       end
-    
+
     fun loop { i : nat | i >= 1 } .<i>. (st : &stack_t(string) >> _, i : int(i)) :
       List0_vt(pthread_t) =
       if i = 1 then
         let
           var thread = create_thread(st)
+          val _ = usleep(90u)
         in
           list_vt_cons(thread, list_vt_nil())
         end
@@ -100,10 +102,10 @@ fn traverse(dir : string) : void =
         in
           list_vt_cons(thread, acc)
         end
-    
+
     fun wait(threads : List0_vt(pthread_t)) : void =
       case+ threads of
-        | ~list_vt_cons (x, xs) => 
+        | ~list_vt_cons (x, xs) =>
           begin
             let
               var ret: int
@@ -113,11 +115,11 @@ fn traverse(dir : string) : void =
             end
           end
         | ~list_vt_nil() => ()
-    
+
     var stack: stack_t(string)
     val () = new(stack)
     val () = push(stack, dir)
-    var threads = loop(stack, 1)
+    var threads = loop(stack, 6)
     val () = wait(threads)
   }
 
