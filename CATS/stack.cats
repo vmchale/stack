@@ -25,7 +25,7 @@ void __cats_push(volatile struct stack_t *st, void *val) {
 // This DOES suffer the ABA problem, viz.
 // http://15418.courses.cs.cmu.edu/spring2013/article/46,
 // however, I think it's okay in our particular use case
-volatile void *__cats_pop(volatile struct stack_t *st) {
+void *__cats_pop(volatile struct stack_t *st) {
     for (;;) {
         volatile struct stack_t *pre_st = st;
         if (st->next == NULL)
