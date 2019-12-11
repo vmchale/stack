@@ -11,7 +11,7 @@ void __cats_new(struct stack_t *st) {
     st->next = NULL;
 }
 
-void __cats_push(struct stack_t *st, void *val) {
+void __cats_push(volatile struct stack_t *st, void *val) {
     for (;;) {
         struct stack_t *pre_st = malloc(sizeof(pre_st));
         pre_st->value = st->value;
@@ -25,9 +25,9 @@ void __cats_push(struct stack_t *st, void *val) {
 // This DOES suffer the ABA problem, viz.
 // http://15418.courses.cs.cmu.edu/spring2013/article/46,
 // however, I think it's okay in our particular use case
-void *__cats_pop(struct stack_t *st) {
+volatile void *__cats_pop(volatile struct stack_t *st) {
     for (;;) {
-        struct stack_t *pre_st = st;
+        volatile struct stack_t *pre_st = st;
         if (st->next == NULL)
             return NULL;
         struct stack_t *xs1 = st->next;
