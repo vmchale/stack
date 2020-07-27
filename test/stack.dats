@@ -1,4 +1,4 @@
-staload "SATS/stack.sats"
+staload "SATS/atomic-stack.sats"
 staload "libats/ML/SATS/string.sats"
 staload EXTRA = "libats/ML/SATS/filebas.sats"
 staload "libats/libc/SATS/unistd.sats"
@@ -17,7 +17,7 @@ staload "libats/libc/SATS/unistd.sats"
 
 #include <pthread.h>
 
-#include "CATS/stack.cats"
+#include "CATS/atomic-stack.cats"
 %}
 
 typedef pthread_t = $extype "pthread_t"
