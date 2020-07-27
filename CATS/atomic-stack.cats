@@ -1,5 +1,7 @@
 #include <stdlib.h>
 
+#include <atomic_ops_stack.h>
+
 atstype_boxed __cats_some(atstype_boxed val);
 atstype_boxed __cats_none();
 

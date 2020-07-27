@@ -6,7 +6,7 @@ in    prelude.default
         [   prelude.bin
           ⫽ { src = "test/stack.dats"
             , target = "${prelude.atsProject}/stack"
-            , libs = [ "pthread", "atomic" ]
+            , libs = [ "pthread", "atomic_ops_gpl", "atomic_ops" ]
             }
         ]
       , cflags = [ "-O2", "-I", "." ]
