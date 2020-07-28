@@ -7,7 +7,8 @@ in    prelude.default
           ⫽ { src = "test/stack.dats"
             , target = "${prelude.atsProject}/stack"
             , libs = [ "pthread", "atomic_ops_gpl", "atomic_ops" ]
+            , gcBin = False
             }
         ]
-      , cflags = [ "-O2", "-I", "." ]
+      , cflags = [ "-O2" ]
       }
