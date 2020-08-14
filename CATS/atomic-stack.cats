@@ -9,7 +9,7 @@ atsvoid_t0ype AO_stack_init_wrapper(atstype_ref st) {
     AO_stack_init(st);
 }
 
-atsvoid_t0ype AO_stack_push_wrapper(atstype_ref st, atstype_var val) {
+atsvoid_t0ype AO_stack_push_wrapper(atstype_ref st, atstype_boxed val) {
     AO_stack_push((AO_stack_t*) st, val);
 }
 
