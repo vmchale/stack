@@ -3,7 +3,7 @@
 
 struct stack_t {
     void *value;
-    struct stack_t *next;
+    volatile struct stack_t *next;
 };
 
 void __cats_new(struct stack_t *st) {
@@ -30,7 +30,7 @@ void *__cats_pop(volatile struct stack_t *st) {
         volatile struct stack_t *pre_st = st;
         if (st->next == NULL)
             return NULL;
-        struct stack_t *xs1 = st->next;
+        volatile struct stack_t *xs1 = st->next;
         void *x = st->value;
         if (atomic_compare_exchange_strong(st, pre_st, *xs1))
             return x;
@@ -41,16 +41,16 @@ void *__cats_pop(volatile struct stack_t *st) {
 atstype_boxed __cats_some(atstype_boxed val);
 atstype_boxed __cats_none();
 
-atstype_boxed pop_ats(atstype_ref st) {
+atstype_boxed pop_ats(volatile atstype_ref st) {
     void *ret = __cats_pop(st);
     if (ret == NULL)
         return __cats_none();
     return __cats_some(ret);
 }
 
-atsvoid_t0ype new_ats(atstype_ref st) { __cats_new(st); }
+atsvoid_t0ype new_ats(volatile atstype_ref st) { __cats_new(st); }
 
-atsvoid_t0ype push_ats(atstype_ref st, atstype_boxed val) {
+atsvoid_t0ype push_ats(volatile atstype_ref st, atstype_boxed val) {
     __cats_push(st, val);
 }
 #endif
