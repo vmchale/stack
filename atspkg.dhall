@@ -10,5 +10,7 @@ in    prelude.default
             , libs = [ "pthread", "atomic" ]
             }
         ]
+      , compiler = [ 0, 4, 2 ]
+      , version = [ 0, 4, 2 ]
       , cflags = [ "-O0", "-I", "." ]
       }
